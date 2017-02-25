@@ -1,0 +1,58 @@
+{
+  "name": "ceri-compiler",
+  "description": "compiles template strings for ceriJS",
+  "version": "0.0.0",
+  "homepage": "https://github.com/cerijs/",
+  "author": {
+    "name": "Paul Pflugradt",
+    "email": "paul.pflugradt@gmail.com"
+  },
+  "license": "MIT",
+  "bin": {
+    "ceri-compiler": "./cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cerijs/ceri-compiler"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "files": [
+    "lib/*.js",
+    "cli.js"
+  ],
+  "main": "lib/index.js",
+  "dependencies": {
+    "acorn": "^4.0.11",
+    "commander": "^2.9.0",
+    "webpack": "^2.2.1",
+    "webpack-merge": "^2.6.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coffee-script": "^1.12.3",
+    "mocha": "^3.2.0",
+    "rimraf": "^2.5.4",
+    "script-runner": "^0.1.6"
+  },
+  "keywords": [
+    "ceri",
+    "component",
+    "compiler",
+    "cli"
+  ],
+  "readmeFilename": "README.md",
+  "scripts": {
+    "clean": "rimraf lib/*",
+    "prebuild": "npm run clean",
+    "build": "coffee --no-header --compile --output lib/ src/*.coffee",
+    "watch": "run-npm -p watch:*",
+    "watch:coffee": "coffee --no-header --compile --watch --output lib/ src/*.coffee",
+    "watch:mocha": "mocha --watch",
+    "test": "mocha",
+    "preversion": "npm test",
+    "version": "npm run build && git add .",
+    "postversion": "git push && git push --tags && npm publish"
+  }
+}
