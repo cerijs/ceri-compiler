@@ -51,12 +51,12 @@ compilejs = (v, js) ->
     linebreaks = html.split("\n").length - 1
     result += "\n".repeat(linebreaks)
     js = js.substr(0,node.start) + result + js.substr(node.end)
-    return [js, node.start + result.length + 1]
+    return [js, result.length]
   ["cwarn","cerror"].forEach (type) ->
     js = replaceExpression js, type, (js, node) ->
       result = makeMessage(type,node)
       js = js.substr(0,node.start) + result + js.substr(node.end)
-      return [js, node.start + result.length + 1]
+      return [js, result.length]
   return js
 
 compileFile = (program, input) ->
