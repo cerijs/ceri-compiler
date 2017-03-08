@@ -27,6 +27,8 @@ describe "ceri-compiler", ->
       compile("<div class1=test1 class2=test2></div>").should.equal "function(){return [this.el(\"div\",{\"class1\":{\"\":\"test1\"},\"class2\":{\"\":\"test2\"}},[])]}"
     it "should work with multiple ground level elements", ->
       compile("<div></div><div></div>").should.equal "function(){return [this.el(\"div\",null,[]),this.el(\"div\",null,[])]}"
+    it "should work with text", ->
+      compile("<div>someText</div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\"#\":\"someText\"}},[])]}"
   describe "index", ->
     main = require "../src/index.coffee"
     it "should work with simple html", ->
@@ -43,8 +45,8 @@ describe "ceri-compiler", ->
       }"
       .should.equal "module.exports = { structure: function(){return [this.el(\"div\",null,[])]} }"
     it "should make warnings", ->
-      main js: "cwarn('true === false', 'true should be false')"
+      main js: "cwarn(true === false, 'true should be false')"
       .should.equal "if(process.env.NODE_ENV!=='production' && true === false){console.warn('true should be false')}"
     it "should make errors", ->
-      main js: "cerror('true === false', 'true should be false')"
+      main js: "cerror(true === false, 'true should be false')"
       .should.equal "if(process.env.NODE_ENV!=='production' && true === false){throw new Error('true should be false')}"

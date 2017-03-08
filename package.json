@@ -25,7 +25,9 @@
   "main": "lib/index.js",
   "dependencies": {
     "acorn": "^4.0.11",
+    "ceri-loader": "^1.0.0",
     "commander": "^2.9.0",
+    "escodegen": "^1.8.1",
     "webpack": "^2.2.1",
     "webpack-merge": "^2.6.1"
   },

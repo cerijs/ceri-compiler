@@ -10,13 +10,8 @@ makeMessage = (type, node) ->
     type = "console.warn"
   else
     type = "throw new Error"
-  condition = node.arguments.shift().value
-  text = node.arguments.map (n) ->
-    if n.raw
-      n.raw
-    else
-      n.name
-  text = text.join(" + ")
+  condition = escodegen.generate(node.arguments.shift())
+  text = node.arguments.map(escodegen.generate).join(" + ")
   return "if(process.env.NODE_ENV!=='production' && #{condition}){#{type}(#{text})}"
 
 compilehtml = (v, html) ->
@@ -38,7 +33,9 @@ replaceExpression = (js, expr, cb) ->
       indexOffset++
   return js
 
+escodegen = null
 compilejs = (v, js) ->
+  escodegen ?= require "escodegen"
   unless js?
     js = v
     v = null
