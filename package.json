@@ -30,7 +30,9 @@
     "htmlparser2": "^3.9.2",
     "escodegen": "^1.8.1",
     "webpack": "^2.2.1",
-    "webpack-merge": "^2.6.1"
+    "webpack-merge": "^2.6.1",
+    "uglify-js": "git://github.com/mishoo/UglifyJS2.git#harmony",
+    "uglifyjs-webpack-plugin": "^0.3.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
