@@ -84,7 +84,8 @@ module.exports = (program) ->
       parsed = input.split(":")
       if parsed.length == 1
         parsed.unshift path.basename(parsed[0],".js")
-      inputs.push parsed
+      if fs.lstatSync(path.resolve(parsed[1])).isFile()
+        inputs.push parsed
     outFiles = []
     for input in inputs
       outFiles.push [input[0],compileFile(program, input[1])]
