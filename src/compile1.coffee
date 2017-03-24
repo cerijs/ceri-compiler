@@ -1,5 +1,6 @@
 htmlparser = require "htmlparser2"
 specialChars = /[^\w\s]/
+marker = "####"
 
 module.exports = (template) ->
   result = "function(){return ["
@@ -42,7 +43,14 @@ module.exports = (template) ->
               mods = {}
               for mod in splitted
                 mods[mod] = true
-              opt[oname][type] = val: v, mods: mods
+              if Object.keys(mods).length == 1 and mods.expr
+                obj = "#{marker}function(){return #{v};}#{marker}"
+              else if mods.expr
+                delete mods.expr
+                obj = val: "#{marker}function(){return #{v};}#{marker}", mods: mods
+              else
+                obj = val: v, mods: mods
+              opt[oname][type] = obj
             else
               opt[oname][type] = v
         else
@@ -54,7 +62,15 @@ module.exports = (template) ->
         opt = options[options.length-1]
         opt ?= {}
         opt.text ?= {}
-        opt.text["#"] ?= txt
+        if txt.indexOf("{{") > -1
+          txt = txt
+            .replace(/{{/g,"\"+(")
+            .replace(/}}/g,")+\"")
+          opt.text[":"] ?= "#{marker}function(){return \"#{txt}\";}#{marker}"
+            .replace(/\+""/g,"")
+            .replace(/""\+/g,"")
+        else
+          opt.text["#"] ?= txt
         options[options.length-1] = opt
     onclosetag: (name) ->
       addOptions()
@@ -64,4 +80,12 @@ module.exports = (template) ->
   parser.write(template)
   parser.end()
   result+="]}"
+  # unescape marked function
+  result = result.replace new RegExp("\"#{marker}(.*?)#{marker}\"","g"), (a,b) ->
+    if b.match(/return/g).length > 1 # remove default return if one is used in expression
+      b = b.replace /function\(\)\{return /,"function(){"
+    return b
+      .replace /\\"/g,"\"" # unescape qoutes
+      .replace /[^\\]@/, (a) -> return a.replace("@","this.") # replace unescaped @ by this.
+      .replace /\\@/, "@" # replace escaped @
   return result

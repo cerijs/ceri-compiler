@@ -29,6 +29,17 @@ describe "ceri-compiler", ->
       compile("<div></div><div></div>").should.equal "function(){return [this.el(\"div\",null,[]),this.el(\"div\",null,[])]}"
     it "should work with text", ->
       compile("<div>someText</div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\"#\":\"someText\"}},[])]}"
+    it "should work with expressions", ->
+      compile("<div :text.expr=test></div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\":\":function(){return test;}}},[])]}"
+    it "should work with text expressions", ->
+      compile("<div>{{test}}</div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\":\":function(){return (test);}}},[])]}"
+      compile("<div>something {{test}} morething</div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\":\":function(){return \"something \"+(test)+\" morething\";}}},[])]}"
+    it "should work with multiple expressions", ->
+      compile("<div :text.expr=test :test.expr=text></div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\":\":function(){return test;}},\"test\":{\":\":function(){return text;}}},[])]}"
+    it "should work with multiple returns", ->
+      compile("<div :text.expr=\"test;return test2\"></div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\":\":function(){test;return test2;}}},[])]}"
+    it "should work with @ in expression", ->
+      compile("<div :text.expr=\"@test='\@'\"></div>").should.equal "function(){return [this.el(\"div\",{\"text\":{\":\":function(){return this.test='@';}}},[])]}"
   describe "index", ->
     main = require "../src/index.coffee"
     it "should work with simple html", ->
