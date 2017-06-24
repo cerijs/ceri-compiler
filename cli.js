@@ -9,6 +9,7 @@ program
   .option('-o, --out [folder]', 'out')
   .option('-b, --bundle', 'make a bundle')
   .option('-w, --webpack', 'webpack config to use for bundle creation')
+  //.option('-s, --style [filename]', 'extracts style to a file')
   .option('-v [version]', 'compiler version to use as default')
   .parse(process.argv);
 if (!program.out)

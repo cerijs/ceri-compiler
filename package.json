@@ -24,21 +24,23 @@
   ],
   "main": "lib/index.js",
   "dependencies": {
-    "acorn": "^4.0.11",
-    "ceri-loader": "^1.0.0",
-    "commander": "^2.9.0",
-    "htmlparser2": "^3.9.2",
+    "acorn": "^5.0.3",
+    "ceri-loader": "^1.1.0",
+    "commander": "^2.10.0",
+    "consolidate": "^0.14.5",
     "escodegen": "^1.8.1",
-    "webpack": "^2.2.1",
-    "webpack-merge": "^2.6.1",
-    "uglify-js": "git://github.com/mishoo/UglifyJS2.git#harmony",
-    "uglifyjs-webpack-plugin": "^0.3.0"
+    "htmlparser2": "^3.9.2",
+    "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony-v2.8.22",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.0.0",
+    "webpack-merge": "^4.1.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "coffee-script": "^1.12.3",
-    "mocha": "^3.2.0",
-    "rimraf": "^2.5.4",
+    "chai": "^4.0.2",
+    "coffeescript": "^2.0.0-beta2",
+    "mocha": "^3.4.2",
+    "pug": "^2.0.0-rc.2",
+    "rimraf": "^2.6.1",
     "script-runner": "^0.1.6"
   },
   "keywords": [

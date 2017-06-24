@@ -5,7 +5,7 @@ path = require "path"
 merge = require "webpack-merge"
 acorn = require "acorn"
 
-makeMessage = (type, node) ->
+makeMessage = (type, node) =>
   if type == "cwarn"
     type = "console.warn"
   else
@@ -17,6 +17,11 @@ makeMessage = (type, node) ->
 compilehtml = (v, html) ->
   unless v?
     throw new Error("ceri-compiler failed. No version for template provided.")
+  
+  if v.split? and (arr = v.split(".")) and arr.length > 1
+    cons = require "consolidate"
+    html = await cons[arr[0]].render(html,{})
+    v = arr[1]
   require("./compile#{v}")(html)
 
 replaceExpression = (js, expr, cb) ->
@@ -26,7 +31,7 @@ replaceExpression = (js, expr, cb) ->
     if node.type == "SequenceExpression"
       node = node.expressions[0]
     try
-      [js,move] = cb(js, node)
+      [js,move] = await cb(js, node)
       indexOffset += move
     catch e
       console.error e
@@ -39,7 +44,7 @@ compilejs = (v, js) ->
   unless js?
     js = v
     v = null
-  js = replaceExpression js, "template", (js, node) ->
+  js = await replaceExpression js, "template", (js, node) ->
     
     if node.arguments[1]?
       _v = node.arguments[0].value
@@ -47,13 +52,13 @@ compilejs = (v, js) ->
     else
       _v = v
       html = node.arguments[0].value
-    result = compilehtml(_v, html)
+    result = await compilehtml(_v, html)
     linebreaks = html.split("\n").length - 1
     result += "\n".repeat(linebreaks)
     js = js.substr(0,node.start) + result + js.substr(node.end)
     return [js, result.length]
-  ["cwarn","cerror"].forEach (type) ->
-    js = replaceExpression js, type, (js, node) ->
+  for type in ["cwarn","cerror"]
+    js = await replaceExpression js, type, (js, node) ->
       result = makeMessage(type,node)
       js = js.substr(0,node.start) + result + js.substr(node.end)
       return [js, result.length]
@@ -65,14 +70,14 @@ compileFile = (program, input) ->
   if fs.existsSync(input)
     fs.readFile input, encoding:"utf8", (err,result) ->
       throw err if err
-      result = compilejs program.v, result
+      result = await compilejs program.v, result
       fs.writeFile output, result, (err) ->
         throw err if err
   return output
 
 module.exports = (program) ->
   if path.extname(__filename) == ".coffee"
-    require "coffee-script/register"
+    require "coffeescript/register"
   if program.html?
     return compilehtml program.v, program.html
   else if program.js?
@@ -92,7 +97,7 @@ module.exports = (program) ->
     if program.bundle
       if program.webpack
         if path.extname(program.webpack) == ".coffee"
-          require "coffee-script/register"
+          require "coffeescript/register"
         webconf = require program.webpack
       if outFiles.length > 1
         es6Bundle = path.resolve program.out, "bundle.ES6.js"

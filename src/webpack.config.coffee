@@ -1,6 +1,7 @@
 path = require "path"
 webpack = require "webpack"
 UglifyJSPlugin = require "uglifyjs-webpack-plugin"
+
 module.exports = {
   output:
     publicPath: "/"
@@ -14,7 +15,6 @@ module.exports = {
         enforce: "post"
         exclude: /node_modules/
       }
-
     ]
   plugins: [
     new webpack.DefinePlugin "process.env.NODE_ENV": JSON.stringify("production")
