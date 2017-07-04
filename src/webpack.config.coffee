@@ -1,6 +1,6 @@
 path = require "path"
 webpack = require "webpack"
-UglifyJSPlugin = require "uglifyjs-webpack-plugin"
+BabiliPlugin = require("babili-webpack-plugin")
 
 module.exports = {
   output:
@@ -18,6 +18,6 @@ module.exports = {
     ]
   plugins: [
     new webpack.DefinePlugin "process.env.NODE_ENV": JSON.stringify("production")
-    new UglifyJSPlugin compress: warnings: false
+    new BabiliPlugin
   ]
 }

@@ -25,13 +25,12 @@
   "main": "lib/index.js",
   "dependencies": {
     "acorn": "^5.0.3",
+    "babili-webpack-plugin": "^0.1.2",
     "ceri-loader": "^1.1.0",
-    "commander": "^2.10.0",
+    "commander": "^2.11.0",
     "consolidate": "^0.14.5",
     "escodegen": "^1.8.1",
     "htmlparser2": "^3.9.2",
-    "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony-v2.8.22",
-    "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.0.0",
     "webpack-merge": "^4.1.0"
   },
@@ -41,7 +40,7 @@
     "mocha": "^3.4.2",
     "pug": "^2.0.0-rc.2",
     "rimraf": "^2.6.1",
-    "script-runner": "^0.1.6"
+    "script-runner": "^0.1.7"
   },
   "keywords": [
     "ceri",
