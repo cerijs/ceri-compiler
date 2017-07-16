@@ -24,19 +24,19 @@
   ],
   "main": "lib/index.js",
   "dependencies": {
-    "acorn": "^5.0.3",
+    "acorn": "^5.1.1",
     "babili-webpack-plugin": "^0.1.2",
     "ceri-loader": "^1.1.0",
     "commander": "^2.11.0",
     "consolidate": "^0.14.5",
     "escodegen": "^1.8.1",
     "htmlparser2": "^3.9.2",
-    "webpack": "^3.0.0",
+    "webpack": "^3.3.0",
     "webpack-merge": "^4.1.0"
   },
   "devDependencies": {
-    "chai": "^4.0.2",
-    "coffeescript": "^2.0.0-beta2",
+    "chai": "^4.1.0",
+    "coffeescript": "^2.0.0-beta3",
     "mocha": "^3.4.2",
     "pug": "^2.0.0-rc.2",
     "rimraf": "^2.6.1",
@@ -52,7 +52,7 @@
   "scripts": {
     "clean": "rimraf lib/*",
     "prebuild": "npm run clean",
-    "build": "coffee --no-header --compile --output lib/ src/*.coffee",
+    "build": "coffee --bare --no-header --compile --output lib/ src/*.coffee",
     "watch": "run-npm -p watch:*",
     "watch:coffee": "coffee --no-header --compile --watch --output lib/ src/*.coffee",
     "watch:mocha": "mocha --watch",
