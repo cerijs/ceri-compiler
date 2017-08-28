@@ -79,7 +79,7 @@ module.exports = (program) ->
   if path.extname(__filename) == ".coffee"
     require "coffeescript/register"
   if program.html?
-    return compilehtml program.v, program.html
+    return compilehtml program.v, program.html, program.locals
   else if program.js?
     return compilejs program.v, program.js
   else if program.out
