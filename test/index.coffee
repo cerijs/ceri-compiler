@@ -71,7 +71,13 @@ describe "ceri-compiler", ->
     
     it "should work with elemental directives and expressions", ->
       compile("<div><@click=on-click option.expr=value /></div>").should.equal "function(){return [this.el(\"div\",{\"click\":{\"@\":{\"val\":\"onClick\",\"mods\":{\"option\":function(){return value;}}}}},[])]}"
-  
+
+    it "should work with arguments", ->
+      compile("<div :text=\"'1'+$1.2+'3'\"></div>").should.equal "function(a){return [this.el(\"div\",{\"text\":{\":\":'1'+a.2+'3'}},[])]}"
+
+    it "should work with nested arguments", ->
+      compile("<div :t=$1><template><div :u=$$1 :v=$1 :w=$4 :x=$$3></div></template></div>").should.equal "function(a,b,c){return [this.el(\"div\",{\"t\":{\":\":a}},function(aa,ba,ca,da){return [this.el(\"div\",{\"u\":{\":\":a},\"v\":{\":\":aa},\"w\":{\":\":da},\"x\":{\":\":c}},[])]})]}"
+
   describe "index", ->
     main = require "../src/index.coffee"
     

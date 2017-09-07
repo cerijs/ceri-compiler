@@ -1,11 +1,31 @@
 htmlparser = require "htmlparser2"
 marker = "####"
 camelize = (str) => str.replace /-(\w)/g, (_, c) => if c then c.toUpperCase() else ''
-parseAttr = require("./compile1_parseAttr")(camelize, marker)
+spliceStr = (str, index, count, add) =>
+  if index < 0 
+    index = str.length + index
+    if index < 0
+      index = 0
+  str.slice(0, index) + (add || "") + str.slice(index + count)
+templateArgs = []
+templateArgs.toArg = (depth, nr) => 
+  return String.fromCharCode(96+nr) + if depth then String.fromCharCode(96+depth) else ""
+
+templateArgs.toArgs = (tmp) =>
+  if (i = tmp.args)?
+    arr = []
+    while i
+      arr.unshift templateArgs.toArg(tmp.depth,i--)
+  return arr
+parseAttr = require("./compile1_parseAttr")(camelize, spliceStr, marker, templateArgs)
 parseDirective = require("./compile1_parseDirective")(camelize, marker)
 
 module.exports = (template) =>
   result = "function(){return ["
+  parseTemplateArgs = (args) =>
+    if (arr = templateArgs.toArgs(args))?
+      result = spliceStr result, args.position, 0, arr.join(',')
+  templateArgs.push position: 9
   lastLevel = 0
   currentLevel = 0
   wasTemplate = false
@@ -33,6 +53,7 @@ module.exports = (template) =>
         result += "#{sep}\"#{name}\""
       else if name == "template"
         result += "function(){return ["
+        templateArgs.push position: result.length-10, depth: templateArgs.length
       else
         options.push parseAttr(attr)
         result += "#{sep}this.el(\"#{name}\","
@@ -59,6 +80,7 @@ module.exports = (template) =>
       if name == "template"
         result += "]})"
         wasTemplate = true
+        parseTemplateArgs(templateArgs.pop())
       else 
         if wasTemplate
           wasTemplate = false
@@ -67,9 +89,10 @@ module.exports = (template) =>
   parser.write(template)
   parser.end()
   result+="]}"
+  parseTemplateArgs(templateArgs.pop())
   # unescape marked function
   result = result.replace new RegExp("\"#{marker}(.*?)#{marker}\"","g"), (a,b) =>
-    if b.match(/return/g).length > 1 # remove default return if one is used in expression
+    if (m = b.match(/return/g))? and m.length > 1 # remove default return if one is used in expression
       b = b.replace /function\(\)\{return /,"function(){"
     return b
       .replace /\\"/g,"\"" # unescape qoutes
